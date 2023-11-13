@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import urllib 
-
+import ssl
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -85,6 +85,7 @@ DATABASES = {
         'NAME': 'EntrainementModel',
         'CLIENT': {
            'host': 'mongodb+srv://user1:mdp@images.eppax5m.mongodb.net/?retryWrites=true&w=majority',
+           'ssl_cert_reqs': ssl.CERT_NONE,
         }
     }
 }
