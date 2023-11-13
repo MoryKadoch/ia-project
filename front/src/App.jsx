@@ -128,9 +128,12 @@ const App = () => {
   };
 
   const getModels = () => {
-    fetch('http://localhost:3001/models')
+    fetch('http://127.0.0.1:8000/models')
       .then((response) => response.json())
-      .then((data) => setModels(data));
+      .then((data) => {
+        setModels(data.models);
+        console.log(data.models);
+      });
   }
 
   return (
