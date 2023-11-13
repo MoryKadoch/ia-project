@@ -78,24 +78,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'EntrainementModel',
-        'HOST': 'mongodb+srv://user1:' + urllib.parse.quote('mdp') + '/EntrainementModel?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true',
-        'ENFORCE_SCHEMA': False
+        'CLIENT': {
+           'host': 'mongodb+srv://user1:mdp@images.eppax5m.mongodb.net/?retryWrites=true&w=majority',
+        }
     }
 }
-
-DATABASES = {
-        'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'EntrainementModel',
-        'HOST': 'mongodb+srv://user1:mdp@images.eppax5m.mongodb.net/EntrainementModel?retryWrites=true',
-        'USER': 'user1',
-        'PASSWORD': 'mdp',
-    }
-}
-
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
