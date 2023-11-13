@@ -1,0 +1,21 @@
+# Fichiers générés par l'environnement virtuel
+venv/
+
+# Fichiers de configuration locaux
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Fichiers de sauvegarde
+*.bak
+*.swp
+*~
+
+# Dossiers spécifiques à Django
+media/
+staticfiles/
+
+# Fichiers de configuration pour certains éditeurs
+.idea/
+.vscode/
