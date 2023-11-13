@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import urllib 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,10 +76,25 @@ WSGI_APPLICATION = 'projet_ia.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'EntrainementModel',
+        'HOST': 'mongodb+srv://user1:' + urllib.parse.quote('mdp') + '/EntrainementModel?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true',
+        'ENFORCE_SCHEMA': False
     }
 }
+
+DATABASES = {
+        'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'EntrainementModel',
+        'HOST': 'mongodb+srv://user1:mdp@images.eppax5m.mongodb.net/EntrainementModel?retryWrites=true',
+        'USER': 'user1',
+        'PASSWORD': 'mdp',
+    }
+}
+
+
+
 
 
 # Password validation
