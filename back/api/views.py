@@ -7,13 +7,6 @@ from api.serializers import apiSerializer
 from api.base64decode import process_image
 
 
-class APIViewSet(viewsets.ModelViewSet):
-    """
-    ajout quick and dirty browsable api
-    """
-    queryset = Train.objects.all()
-    serializer_class = apiSerializer
-
 @csrf_exempt
 def api_list(request):
     """
@@ -26,11 +19,12 @@ def api_list(request):
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
+        print(process_image(data["drawing"], 0))
         try:
-            res = process_image(data["drawing"])
+            res = process_image(data["drawing"], 0)
         except:
-            return JsonResponse("Bad datas", status=400)
-        return JsonResponse(res, status=201)
+            return JsonResponse({"error": "Bad datas"}, status=400)
+        return JsonResponse({"prediction": str(res)}, status=201)
 
 @csrf_exempt
 def api_detail(request, pk):

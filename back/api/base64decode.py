@@ -51,7 +51,7 @@ def process_image(datas, model):
     
     img = img.reshape(1, 28, 28, 1)
     
-    model = keras.models.load_model('back/projet_ia/models/LSTM-1_MNIST.h5py')
+    model = keras.models.load_model('projet_ia/models/LSTM-1_MNIST.h5py')
     
     res = model.predict(img).argmax(axis=1)[0]
 
