@@ -15,12 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 import os
 from django.http import JsonResponse
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
 ]
 
 def models(request):
@@ -31,4 +32,5 @@ def models(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('models/', models),
+    path('', include('api.urls')),
 ]

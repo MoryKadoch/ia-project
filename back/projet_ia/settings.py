@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -84,11 +86,16 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'EntrainementModel',
         'CLIENT': {
-           'host': 'mongodb+srv://user1:mdp@images.eppax5m.mongodb.net/?retryWrites=true&w=majority',
+           'host': 'mongodb+srv://user1:mdp@clusterai.n8qjyoh.mongodb.net/',
            'ssl_cert_reqs': ssl.CERT_NONE,
+        },
+        'OPTIONS': {
+            'options': '-c search_path=__schema__'
         }
     }
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
