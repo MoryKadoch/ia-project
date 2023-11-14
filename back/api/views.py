@@ -4,6 +4,7 @@ from rest_framework.parsers import JSONParser
 from api.models import Train
 from rest_framework import viewsets
 from api.serializers import apiSerializer
+from api.base64decode import process_image
 
 
 class APIViewSet(viewsets.ModelViewSet):
@@ -12,9 +13,6 @@ class APIViewSet(viewsets.ModelViewSet):
     """
     queryset = Train.objects.all()
     serializer_class = apiSerializer
-
-
-
 
 @csrf_exempt
 def api_list(request):
@@ -28,11 +26,11 @@ def api_list(request):
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = apiSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+        try:
+            res = process_image(data["drawing"])
+        except:
+            return JsonResponse("Bad datas", status=400)
+        return JsonResponse(res, status=201)
 
 @csrf_exempt
 def api_detail(request, pk):
