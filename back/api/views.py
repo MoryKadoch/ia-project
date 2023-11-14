@@ -2,11 +2,25 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from api.models import Train
+from rest_framework import viewsets
 from api.serializers import apiSerializer
+
+
+class APIViewSet(viewsets.ModelViewSet):
+    """
+    ajout quick and dirty browsable api
+    """
+    queryset = Train.objects.all()
+    serializer_class = apiSerializer
+
+
+
 
 @csrf_exempt
 def api_list(request):
-
+    """
+    list all documents
+    """
     if request.method == 'GET':
         elem = Train.objects.all()
         serializer = apiSerializer(elem, many=True)
@@ -22,6 +36,9 @@ def api_list(request):
 
 @csrf_exempt
 def api_detail(request, pk):
+    """
+    retrieve, update or delete a document
+    """
     try:
         elem = Train.objects.get(pk=pk)
         print(elem)
