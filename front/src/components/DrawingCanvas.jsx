@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid, Slider, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
@@ -13,6 +13,10 @@ const useStyles = makeStyles({
     button: {
         margin: "0 10px 10px 10px",
     },
+    slider: {
+        width: "200px",
+        margin: "10px",
+    },
 });
 
 function DrawingCanvas() {
@@ -20,6 +24,7 @@ function DrawingCanvas() {
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [coordinates, setCoordinates] = useState([]);
+    const [brushSize, setBrushSize] = useState(10);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -28,10 +33,10 @@ function DrawingCanvas() {
         canvas.width = 300;
         canvas.height = 300;
 
-        context.lineWidth = 10;
+        context.lineWidth = brushSize;
         context.lineCap = "round";
         context.strokeStyle = "black";
-    }, []);
+    }, [brushSize]);
 
     const startDrawing = (event) => {
         const { offsetX, offsetY } = event.nativeEvent;
@@ -81,6 +86,10 @@ function DrawingCanvas() {
         link.click();
     };
 
+    const handleBrushSizeChange = (event, newValue) => {
+        setBrushSize(newValue);
+    };
+
     return (
         <Grid container direction="column" alignItems="center" spacing={2}>
             <Grid item>
@@ -93,6 +102,20 @@ function DrawingCanvas() {
                 />
             </Grid>
             <Grid item>
+                <Typography id="brush-size-slider" gutterBottom>
+                    Brush size ({brushSize}px)
+                </Typography>
+                <Slider
+                    className={classes.slider}
+                    value={brushSize}
+                    min={10}
+                    max={100}
+                    step={1}
+                    onChange={handleBrushSizeChange}
+                    aria-labelledby="brush-size-slider"
+                />
+            </Grid>
+            <Grid item>
                 <Grid container justify="center" spacing={2}>
                     <Grid item>
                         <Button
@@ -101,7 +124,7 @@ function DrawingCanvas() {
                             color="secondary"
                             onClick={clearCanvas}
                         >
-                            Clear
+                            Effacer
                         </Button>
                     </Grid>
                     <Grid item>
@@ -111,7 +134,7 @@ function DrawingCanvas() {
                             color="primary"
                             onClick={saveDrawing}
                         >
-                            Save
+                            Enregistrer
                         </Button>
                     </Grid>
                 </Grid>

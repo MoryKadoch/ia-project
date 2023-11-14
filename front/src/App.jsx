@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
-import { AppBar, Button, Container, Grid, Toolbar, Typography, Select, MenuItem } from '@mui/material';
+import { AppBar, Button, Container, Grid, Toolbar, Typography, Select, MenuItem, CircularProgress, Backdrop } from '@mui/material';
 import DrawingCanvas from './components/DrawingCanvas';
 import { spacing } from '@mui/system';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -86,6 +86,10 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 5,
     },
   },
+  backdrop: {
+    zIndex: 9999,
+    color: '#fff',
+  },
 }));
 
 const App = () => {
@@ -98,6 +102,8 @@ const App = () => {
     'model2',
     'model3',
   ]);
+  const [loading, setLoading] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   useEffect(() => {
     getModels();
@@ -118,6 +124,7 @@ const App = () => {
       drawing: dataURL,
       model: selectedModel
     };
+    setLoading(true);
     fetch('http://127.0.0.1:8000/api/', {
       method: 'POST',
       headers: {
@@ -126,7 +133,11 @@ const App = () => {
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
-      .then((data) => setPrediction(data.prediction));
+      .then((data) => {
+        setPrediction(data.prediction);
+        setLoading(false);
+        setShowFeedback(true);
+      });
   };
 
   const getModels = () => {
@@ -189,23 +200,29 @@ const App = () => {
             Prediction
           </Typography>
           <div className={classes.predictionContainer}>
-            {prediction && (
-              <Typography variant="h4" className={classes.predictionText}>
-                {prediction}
-              </Typography>
+            {loading ? (
+              <CircularProgress color="inherit" />
+            ) : (
+              prediction && (
+                <Typography variant="h4" className={classes.predictionText}>
+                  {prediction}
+                </Typography>
+              )
             )}
           </div>
-          <div style={{ width: '100%', height: 20 }}>
-            <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
-              Is this correct?
-            </Typography>
-            <Button variant="contained" color="primary" className={classes.awnserButton} style={{ marginRight: 20 }} onClick={() => alert('Thanks for your feedback!')}>
-              Yes
-            </Button>
-            <Button variant="contained" color="secondary" className={classes.awnserButton} onClick={() => alert('Thanks for your feedback!')}>
-              No
-            </Button>
-          </div>
+          {showFeedback && (
+            <div style={{ width: '100%', height: 20 }}>
+              <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
+                Is this correct?
+              </Typography>
+              <Button variant="contained" color="primary" className={classes.awnserButton} style={{ marginRight: 20 }} onClick={() => alert('Thanks for your feedback!')}>
+                Yes
+              </Button>
+              <Button variant="contained" color="secondary" className={classes.awnserButton} onClick={() => alert('Thanks for your feedback!')}>
+                No
+              </Button>
+            </div>
+          )}
         </Grid>
 
       </Grid>
@@ -216,6 +233,9 @@ const App = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+      <Backdrop className={classes.backdrop} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Container>
   );
 };
