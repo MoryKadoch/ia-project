@@ -124,7 +124,7 @@ function DrawingCanvas() {
                             color="secondary"
                             onClick={clearCanvas}
                         >
-                            Effacer
+                            Clear
                         </Button>
                     </Grid>
                     <Grid item>
@@ -134,7 +134,7 @@ function DrawingCanvas() {
                             color="primary"
                             onClick={saveDrawing}
                         >
-                            Enregistrer
+                            Save
                         </Button>
                     </Grid>
                 </Grid>
