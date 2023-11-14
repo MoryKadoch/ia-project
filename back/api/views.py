@@ -22,9 +22,13 @@ def api_list(request):
         print(process_image(data["drawing"], 0))
         try:
             res = process_image(data["drawing"], 0)
+
+            confidence = res[0][res.argmax(axis=1)[0]]*100
+            confidence = "{:.2f}".format(confidence) + "%"
+
         except:
             return JsonResponse({"error": "Bad datas"}, status=400)
-        return JsonResponse({"prediction": str(res)}, status=201)
+        return JsonResponse({"prediction": str(res.argmax(axis=1)[0]), "confidence": str(confidence)}, status=201)
 
 @csrf_exempt
 def api_detail(request, pk):

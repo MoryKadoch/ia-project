@@ -46,10 +46,14 @@ def process_image(datas, model_select):
     
     img = cv2.bitwise_not(img)
     
-    img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_NEAREST )
+    img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA )
+
+    #cv2.imwrite("output_reside.jpeg", img)
     
     img = img.reshape(1, 28, 28, 1)
     
-    res = settings.IA_MODEL.predict(img).argmax(axis=1)[0]
+    res = settings.IA_MODEL.predict(img)
+    print(res)
+    
 
     return res
