@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
-import { AppBar, Button, Container, Grid, Toolbar, Typography, Select, MenuItem, CircularProgress, Backdrop } from '@mui/material';
+import { AppBar, Button, Container, Grid, Toolbar, Typography, Select, MenuItem, CircularProgress, Backdrop, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import DrawingCanvas from './components/DrawingCanvas';
 import { spacing } from '@mui/system';
 
@@ -90,12 +90,24 @@ const useStyles = makeStyles(() => ({
     zIndex: 9999,
     color: '#fff',
   },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: 'white',
+    border: '2px solid #000',
+    boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
+    padding: spacing(2, 4, 3),
+  },
 }));
 
 const App = () => {
   const classes = useStyles();
   const dispatcher = useRef(null);
   const [prediction, setPrediction] = useState('...');
+  const [confidence, setConfidence] = useState(0);
   const [selectedModel, setSelectedModel] = useState('');
   const [models, setModels] = useState([
     'model1',
@@ -103,12 +115,25 @@ const App = () => {
     'model3',
   ]);
   const [loading, setLoading] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [responses, setResponses] = useState(localStorage.getItem('responses') ? JSON.parse(localStorage.getItem('responses')) : []);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [answerGiven, setAnswerGiven] = useState(false);
 
   useEffect(() => {
     getModels();
-  }
-    , []);
+  }, []);
+
+  useEffect(() => {
+    const storedResponses = localStorage.getItem('responses');
+    if (storedResponses) {
+      setResponses(JSON.parse(storedResponses));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('responses', JSON.stringify(responses));
+  }, [responses]);
 
   const sendDrawing = () => {
     if (!selectedModel) {
@@ -135,8 +160,10 @@ const App = () => {
       .then((response) => response.json())
       .then((data) => {
         setPrediction(data.prediction);
+        setConfidence(data.confidence);
         setLoading(false);
-        setShowFeedback(true);
+        setShowAnswer(true);
+        setAnswerGiven(false);
       });
   };
 
@@ -148,6 +175,38 @@ const App = () => {
         console.log(data.models);
       });
   }
+
+  const handleYes = () => {
+    setResponses([...responses, { model: selectedModel, correct: true }]);
+    setShowAnswer(false);
+    setAnswerGiven(true);
+  };
+
+  const handleNo = () => {
+    setResponses([...responses, { model: selectedModel, correct: false }]);
+    setShowAnswer(false);
+    setAnswerGiven(true);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const handleResetStats = () => {
+    localStorage.removeItem('responses');
+    setResponses([]);
+  };
+
+  const getModelStats = (model) => {
+    const total = responses.filter((response) => response.model === model).length;
+    const correct = responses.filter((response) => response.model === model && response.correct).length;
+    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+    return `${percentage}% (${correct}/${total})`;
+  };
 
   return (
     <Container className={`${classes.root} ${classes.fullwidthContainer}`}>
@@ -210,22 +269,32 @@ const App = () => {
               )
             )}
           </div>
-          {showFeedback && (
+          {showAnswer && !answerGiven && (
             <div style={{ width: '100%', height: 20 }}>
+              <Typography variant="h6" style={{ textAlign: 'center', marginTop: 20 }}>
+                Confidence: {confidence}
+              </Typography>
               <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
                 Is this correct?
               </Typography>
-              <Button variant="contained" color="primary" className={classes.awnserButton} style={{ marginRight: 20 }} onClick={() => alert('Thanks for your feedback!')}>
+              <Button variant="contained" color="primary" className={classes.awnserButton} style={{ marginRight: 20 }} onClick={handleYes}>
                 Yes
               </Button>
-              <Button variant="contained" color="secondary" className={classes.awnserButton} onClick={() => alert('Thanks for your feedback!')}>
+              <Button variant="contained" color="secondary" className={classes.awnserButton} onClick={handleNo}>
                 No
               </Button>
             </div>
           )}
+          {answerGiven && (
+            <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
+              Thank you for your answer!
+            </Typography>
+          )}
         </Grid>
-
       </Grid>
+      <Button variant="contained" color="primary" onClick={handleModalOpen} style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 10, display: 'block' }}>
+        Show statistics
+      </Button>
       <AppBar position="static" className={classes.footer}>
         <Toolbar>
           <Typography variant="body1" className={classes.footerText}>
@@ -236,6 +305,40 @@ const App = () => {
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      <Modal
+        open={modalOpen}
+        onClose={handleModalClose}
+        aria-labelledby="model-statistics"
+        aria-describedby="model-statistics"
+        className={classes.modal}
+      >
+        <div className={classes.paper}>
+          <Typography variant="h4" component="div" style={{ margin: 20, textAlign: 'center', color: 'black' }}>
+            Model statistics
+          </Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Model</TableCell>
+                  <TableCell>Accuracy</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {models.map((model) => (
+                  <TableRow key={model}>
+                    <TableCell>{model}</TableCell>
+                    <TableCell>{getModelStats(model)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button variant="contained" color="secondary" onClick={handleResetStats} style={{ margin: 20 }}>
+            Reset statistics
+          </Button>
+        </div>
+      </Modal>
     </Container>
   );
 };
