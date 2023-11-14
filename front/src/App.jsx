@@ -109,14 +109,16 @@ const App = () => {
       alert('Please select a model');
       return;
     }
+
     const canvas = document.querySelector('canvas');
-    const dataURL = canvas.toDataURL();
+    const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
+
     console.log(dataURL);
     const data = {
       drawing: dataURL,
       model: selectedModel
     };
-    fetch('http://localhost:3001/predict', {
+    fetch('http://127.0.0.1:8000/api/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
