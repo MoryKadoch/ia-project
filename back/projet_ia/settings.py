@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from pyexpat import model
 import urllib 
 import ssl
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -137,3 +139,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+import keras
+
+def _load_model_once():
+    return keras.models.load_model('projet_ia/models/LSTM-1_MNIST.h5py')
+
+IA_MODEL = _load_model_once()

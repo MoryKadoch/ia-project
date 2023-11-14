@@ -1,6 +1,6 @@
 import base64
 import matplotlib.pyplot as plt
-import keras
+from django.conf import settings
 
 #res = base64.b64decode((file))
 
@@ -31,7 +31,7 @@ import cv2
 
 #print(res[0])
 
-def process_image(datas, model):
+def process_image(datas, model_select):
     datas = base64.b64decode((datas))
     output = open("output.png", "wb")
     output.write(datas)
@@ -51,8 +51,8 @@ def process_image(datas, model):
     
     img = img.reshape(1, 28, 28, 1)
     
-    model = keras.models.load_model('projet_ia/models/LSTM-1_MNIST.h5py')
     
-    res = model.predict(img).argmax(axis=1)[0]
+    
+    res = settings.IA_MODEL.predict(img).argmax(axis=1)[0]
 
     return res
