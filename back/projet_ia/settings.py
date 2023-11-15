@@ -158,3 +158,5 @@ IA_MODEL = _load_all_model_once()
 DATABASE_ROUTERS = [
     "projet_ia.router.DBRouter"
 ]
+
+OPENAI_API_KEY = "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"
