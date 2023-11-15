@@ -147,10 +147,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import keras
 
-def _load_model_once():
-    return keras.models.load_model('api/models/LSTM-1_MNIST.h5py')
+def _load_all_model_once():
+    return {
+        "LSTM-1_MNIST": keras.models.load_model('api/models/LSTM-1_MNIST.h5py'), 
+        "CNN-1_MNIST": keras.models.load_model('api/models/CNN-1_MNIST.h5py')
+        }
 
-IA_MODEL = _load_model_once()
+IA_MODEL = _load_all_model_once()
 
 DATABASE_ROUTERS = [
     "projet_ia.router.DBRouter"

@@ -25,7 +25,7 @@ def process_image(datas, model_select):
     
     img = img.reshape(1, 28, 28, 1)
     
-    res = settings.IA_MODEL.predict(img)
+    res = settings.IA_MODEL[model_select].predict(img)
     os.remove("output.png")
 
     return res

@@ -22,7 +22,7 @@ def api_list(request):
         data = JSONParser().parse(request)
         print(process_image(data["drawing"], 0))
         try:
-            res = process_image(data["drawing"], 0)
+            res = process_image(data["drawing"], data["model"])
 
             confidence = res[0][res.argmax(axis=1)[0]]*100
             confidence = "{:.2f}".format(confidence) + "%"
