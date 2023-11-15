@@ -150,6 +150,38 @@ const App = () => {
     setResponses([]);
   };
 
+  const sendDrawing = () => {
+    if (!selectedModel) {
+      alert('Please select a model');
+      return;
+    }
+
+    const canvas = document.querySelector('canvas');
+    const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
+
+    console.log(dataURL);
+    const data = {
+      drawing: dataURL,
+      model: selectedModel
+    };
+    setLoading(true);
+    fetch('http://127.0.0.1:8000/api/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setPrediction(data.prediction);
+        setConfidence(data.confidence);
+        setLoading(false);
+        setShowAnswer(true);
+        setAnswerGiven(false);
+      });
+  };
+
   const getModelStats = (model) => {
     const total = responses.filter((response) => response.model === model).length;
     const correct = responses.filter((response) => response.model === model && response.correct).length;
@@ -191,37 +223,7 @@ const App = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                  if (!selectedModel) {
-                    alert('Please select a model');
-                    return;
-                  }
-
-                  const canvas = document.querySelector('canvas');
-                  const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
-
-                  console.log(dataURL);
-                  const data = {
-                    drawing: dataURL,
-                    model: selectedModel
-                  };
-                  setLoading(true);
-                  fetch('http://127.0.0.1:8000/api/', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                  })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      setPrediction(data.prediction);
-                      setConfidence(data.confidence);
-                      setLoading(false);
-                      setShowAnswer(true);
-                      setAnswerGiven(false);
-                    });
-                }}
+                onClick={sendDrawing}
                 className={classes.button}
               >
                 Send
