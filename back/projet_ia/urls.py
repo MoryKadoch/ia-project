@@ -18,19 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 import os
 from django.http import JsonResponse
+    
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-]
-
-def models(request):
-    models_dir = os.path.join(os.path.dirname(__file__), 'models')
-    models_files = os.listdir(models_dir)
-    return JsonResponse({'models': models_files})
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('models/', models),
     path('', include('api.urls')),
 ]

@@ -1,11 +1,16 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\back",
+    "\\back\\api",
+    "\\back\\projet_ia",
+    "\\back\\projet_ia\\models",
+    "\\back\\projet_ia\\models\\LSTM-1_MNIST.h5py",
+    "\\front",
+    "\\front\\src",
+    "\\front\\src\\components",
+    "\\IA"
   ],
-<<<<<<< HEAD
-  "SelectedNode": "\\C:\\Users\\Dedhal\\Source\\Repos\\ia-project",
-=======
-  "SelectedNode": "\\C:\\Users\\joris.monteillet\\Source\\Repos\\ia-project",
->>>>>>> Joris
+  "SelectedNode": "\\front\\src\\App.jsx",
   "PreviewInSolutionExplorer": false
 }

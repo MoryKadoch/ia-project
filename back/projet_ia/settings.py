@@ -91,9 +91,14 @@ DATABASES = {
            'host': 'mongodb+srv://user1:mdp@clusterai.n8qjyoh.mongodb.net/',
            'ssl_cert_reqs': ssl.CERT_NONE,
         },
-        'OPTIONS': {
-            'options': '-c search_path=__schema__'
-        }
+    },
+    'extension': {
+        'ENGINE': 'djongo',
+        'NAME': 'EntrainementModel',
+        'CLIENT': {
+           'host': 'mongodb+srv://user1:mdp@images.eppax5m.mongodb.net/?retryWrites=true&w=majority',
+           'ssl_cert_reqs': ssl.CERT_NONE,
+        },
     }
 }
 
@@ -143,6 +148,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import keras
 
 def _load_model_once():
-    return keras.models.load_model('projet_ia/models/LSTM-1_MNIST.h5py')
+    return keras.models.load_model('api/models/LSTM-1_MNIST.h5py')
 
 IA_MODEL = _load_model_once()
+
+DATABASE_ROUTERS = [
+    "projet_ia.router.DBRouter"
+]
