@@ -102,20 +102,6 @@ function DrawingCanvas() {
                 />
             </Grid>
             <Grid item>
-                <Typography id="brush-size-slider" gutterBottom>
-                    Brush size ({brushSize}px)
-                </Typography>
-                <Slider
-                    className={classes.slider}
-                    value={brushSize}
-                    min={10}
-                    max={100}
-                    step={1}
-                    onChange={handleBrushSizeChange}
-                    aria-labelledby="brush-size-slider"
-                />
-            </Grid>
-            <Grid item>
                 <Grid container justify="center" spacing={2}>
                     <Grid item>
                         <Button
@@ -138,6 +124,20 @@ function DrawingCanvas() {
                         </Button>
                     </Grid>
                 </Grid>
+            </Grid>
+            <Grid item>
+                <Typography id="brush-size-slider" gutterBottom>
+                    Brush size ({brushSize}px)
+                </Typography>
+                <Slider
+                    className={classes.slider}
+                    value={brushSize}
+                    min={10}
+                    max={100}
+                    step={1}
+                    onChange={handleBrushSizeChange}
+                    aria-labelledby="brush-size-slider"
+                />
             </Grid>
         </Grid>
     );
