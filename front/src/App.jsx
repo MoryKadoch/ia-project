@@ -122,7 +122,7 @@ const App = () => {
       .then((response) => response.json())
       .then((data) => {
         setModels(data.models);
-        console.log(data.models);
+        //console.log(data.models);
       });
   }
 
@@ -160,7 +160,6 @@ const App = () => {
     const canvas = document.querySelector('canvas');
     const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
 
-    console.log(dataURL);
     const data = {
       drawing: dataURL,
       model: selectedModel

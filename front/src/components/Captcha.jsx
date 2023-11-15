@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Button, Typography } from '@mui/material';
 import DrawingCanvas from './DrawingCanvas';
 import { styled } from "@mui/system";
+import { API_BASE_URL } from '../../config';
 
 const Root = styled('div')({
     display: 'flex',
@@ -58,13 +59,12 @@ const Captcha = ({ onSuccess }) => {
         const canvas = document.querySelector('canvas');
         const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
 
-        console.log(dataURL);
         const data = {
             drawing: dataURL,
             model: 'LSTM-1_MNIST'
         };
         setLoading(true);
-        fetch('http://127.0.0.1:8000/api/', {
+        fetch(`${API_BASE_URL}/api/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
