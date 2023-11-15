@@ -1,35 +1,31 @@
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { spacing } from '@mui/system';
+import { AppBar, Toolbar, Typography } from '@mui/material';
+import { spacing, styled } from '@mui/system';
 
-const useStyles = makeStyles(() => ({
-    footer: {
-        top: 'auto',
-        bottom: 0,
-        backgroundColor: 'black !important',
-        padding: spacing(2),
-        alignItems: 'center',
-        marginTop: 100,
-      },
-      footerText: {
-        textAlign: 'center',
+const FooterStyled = styled(AppBar)(({ theme }) => ({
+    top: 'auto',
+    bottom: 0,
+    backgroundColor: 'black !important',
+    padding: spacing(2),
+    alignItems: 'center',
+    marginTop: 100,
+}));
+
+const FooterText = styled(Typography)(({ theme }) => ({
+    textAlign: 'center',
+    color: 'white',
+    '& a': {
         color: 'white',
-        '& a': {
-          color: 'white',
-          textDecoration: 'none',
-          marginLeft: 5,
-          marginRight: 5,
-        },
-      },
+        textDecoration: 'none',
+        marginLeft: 5,
+        marginRight: 5,
+    },
 }));
 
 const Footer = () => {
-    const classes = useStyles();
-
     return (
-        <AppBar position="static" className={classes.footer}>
+        <FooterStyled position="static">
             <Toolbar>
-                <Typography variant="body1" className={classes.footerText}>
+                <FooterText variant="body1">
                     Made with ❤️ by<br></br>
                     <a href="https://github.com/MoryKadoch" target="_blank">
                         Mory
@@ -46,9 +42,9 @@ const Footer = () => {
                     <a href="https://github.com/yakinos" target="_blank">
                         Yakine
                     </a>
-                </Typography>
+                </FooterText>
             </Toolbar>
-        </AppBar>
+        </FooterStyled>
     );
 }
 

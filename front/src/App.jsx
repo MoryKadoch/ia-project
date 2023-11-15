@@ -1,87 +1,87 @@
 import { useRef, useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
-import { AppBar, Button, Container, Grid, Toolbar, Typography, Select, MenuItem, CircularProgress, Backdrop, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Container, Grid, Typography, Select, MenuItem, CircularProgress, Backdrop, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import DrawingCanvas from './components/DrawingCanvas';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { spacing } from '@mui/system';
+import { spacing, styled } from '@mui/system';
 import Captcha from './components/Captcha';
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-  },
-  title: {
-    marginBottom: spacing(4),
-  },
-  canvasContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  button: {
-    width: 200,
-  },
-  awnserButton: {
-    width: 10,
-    marginRight: 100,
-  },
-  fullwidthContainer: {
-    maxWidth: '100% !important',
-    padding: 0 + ' !important',
-  },
-  verticalBar: {
-    backgroundColor: 'white',
-    width: '2px',
-    height: '100%',
-    margin: '0 auto',
-  },
-  select: {
-    width: 300,
-    margin: '20px auto',
-    display: 'block',
-    backgroundColor: 'white',
-    color: 'black',
-  },
-  predictionContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 300,
-    width: 300,
-    marginTop: 20,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
-    margin: '0 auto',
-    color: 'black',
-  },
-  predictionText: {
-    fontSize: '100px !important',
-  },
-  backdrop: {
-    zIndex: 9999,
-    color: '#fff',
-  },
-  modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paper: {
-    backgroundColor: 'white',
-    border: '2px solid #000',
-    boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
-    padding: spacing(2, 4, 3),
-  },
-}));
+const RootContainer = styled(Container)({
+  maxWidth: '100% !important',
+  padding: 0 + ' !important',
+});
+
+const Title = styled(Typography)({
+  marginBottom: spacing(4),
+});
+
+const CanvasContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'center',
+  marginTop: 20,
+});
+
+const ButtonStyled = styled(Button)({
+  width: 200,
+});
+
+const FullwidthContainer = styled(Container)({
+  maxWidth: '100% !important',
+  padding: 0 + ' !important',
+});
+
+const VerticalBar = styled('div')({
+  backgroundColor: 'white',
+  width: '2px',
+  height: '100%',
+  margin: '0 auto',
+});
+
+const SelectStyled = styled(Select)({
+  width: 300,
+  margin: '20px auto',
+  display: 'block',
+  backgroundColor: 'white',
+  color: 'black',
+});
+
+const PredictionContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: 300,
+  width: 300,
+  marginTop: 20,
+  backgroundColor: 'white',
+  borderRadius: 5,
+  boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
+  margin: '0 auto',
+  color: 'black',
+});
+
+const PredictionText = styled(Typography)({
+  fontSize: '100px !important',
+});
+
+const BackdropStyled = styled(Backdrop)({
+  zIndex: 9999,
+  color: '#fff',
+});
+
+const ModalStyled = styled(Modal)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+const PaperStyled = styled('div')({
+  backgroundColor: 'white',
+  border: '2px solid #000',
+  boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
+  padding: spacing(2, 4, 3),
+});
 
 const App = () => {
-  const classes = useStyles();
   const [captchaSuccess, setCaptchaSuccess] = useState(false);
   const [selectedModel, setSelectedModel] = useState('');
   const [models, setModels] = useState([
@@ -190,25 +190,24 @@ const App = () => {
   };
 
   return (
-    <Container className={`${classes.root} ${classes.fullwidthContainer}`}>
+    <RootContainer className={`${FullwidthContainer}`}>
       {!captchaSuccess && <Captcha onSuccess={handleCaptchaSuccess} />}
       {captchaSuccess && (
         <>
           <Header />
           <Grid container spacing={2} marginTop={4}>
             <Grid item xs={12} md={5}>
-              <Typography variant="h4" component="div">
+              <Title variant="h4" component="div">
                 Draw a digit
-              </Typography>
-              <div className={classes.canvasContainer}>
+              </Title>
+              <CanvasContainer>
                 <DrawingCanvas />
-              </div>
+              </CanvasContainer>
               <Grid container justify="center" spacing={2}>
-                <Select
+                <SelectStyled
                   value={selectedModel}
                   onChange={(event) => setSelectedModel(event.target.value)}
                   displayEmpty
-                  className={classes.select}
                 >
                   <MenuItem value="" disabled>
                     Choose a model
@@ -218,50 +217,51 @@ const App = () => {
                       {model}
                     </MenuItem>
                   ))}
-                </Select>
+                </SelectStyled>
               </Grid>
-              <Button
+              <ButtonStyled
                 variant="contained"
                 color="primary"
                 onClick={sendDrawing}
-                className={classes.button}
               >
                 Send
-              </Button>
+              </ButtonStyled>
             </Grid>
             <Grid item xs={12} md={2} style={{ alignSelf: 'stretch' }}>
-              <div className={classes.verticalBar}></div>
+              <VerticalBar></VerticalBar>
             </Grid>
             <Grid item xs={12} md={5}>
               <Typography variant="h4" component="div">
                 Prediction
               </Typography>
-              <div className={classes.predictionContainer}>
+              <PredictionContainer>
                 {loading ? (
                   <CircularProgress color="inherit" />
                 ) : (
                   prediction && (
-                    <Typography variant="h4" className={classes.predictionText}>
+                    <PredictionText variant="h4">
                       {prediction}
-                    </Typography>
+                    </PredictionText>
                   )
                 )}
-              </div>
+              </PredictionContainer>
               {showAnswer && !answerGiven && (
-                <div style={{ width: '100%', height: 20 }}>
-                  <Typography variant="h6" style={{ textAlign: 'center', marginTop: 20 }}>
-                    Confidence: {confidence}
-                  </Typography>
-                  <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
-                    Is this correct?
-                  </Typography>
-                  <Button variant="contained" color="primary" className={classes.awnserButton} style={{ marginRight: 20 }} onClick={handleYes}>
-                    Yes
-                  </Button>
-                  <Button variant="contained" color="secondary" className={classes.awnserButton} onClick={handleNo}>
-                    No
-                  </Button>
-                </div>
+               <div style={{ textAlign: 'center', marginTop: 20 }}>
+               <Typography variant="h6">
+                   Confidence: {confidence}
+               </Typography>
+               <Typography variant="h4" style={{ marginTop: 20 }}>
+                   Is this correct?
+               </Typography>
+               <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
+                   <Button variant="contained" color="primary" style={{ marginRight: 20 }} onClick={handleYes}>
+                       Yes
+                   </Button>
+                   <Button variant="contained" color="secondary" onClick={handleNo}>
+                       No
+                   </Button>
+               </div>
+           </div>
               )}
               {answerGiven && (
                 <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
@@ -269,17 +269,16 @@ const App = () => {
                 </Typography>
               )}
             </Grid>
-            <Button variant="contained" color="primary" onClick={handleModalOpen} style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 10, display: 'block' }}>
+            <ButtonStyled variant="contained" color="primary" onClick={handleModalOpen} style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 10, display: 'block' }}>
               Show statistics
-            </Button>
-            <Modal
+            </ButtonStyled>
+            <ModalStyled
               open={modalOpen}
               onClose={handleModalClose}
               aria-labelledby="model-statistics"
               aria-describedby="model-statistics"
-              className={classes.modal}
             >
-              <div className={classes.paper}>
+              <PaperStyled>
                 <Typography variant="h4" component="div" style={{ margin: 20, textAlign: 'center', color: 'black' }}>
                   Model statistics
                 </Typography>
@@ -301,19 +300,19 @@ const App = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Button variant="contained" color="secondary" onClick={handleResetStats} style={{ margin: 20 }}>
+                <ButtonStyled variant="contained" color="secondary" onClick={handleResetStats} style={{ margin: 20 }}>
                   Reset statistics
-                </Button>
-              </div>
-            </Modal>
+                </ButtonStyled>
+              </PaperStyled>
+            </ModalStyled>
           </Grid>
           <Footer />
         </>
       )}
-      <Backdrop className={classes.backdrop} open={loading}>
+      <BackdropStyled open={loading}>
         <CircularProgress color="inherit" />
-      </Backdrop>
-    </Container>
+      </BackdropStyled>
+    </RootContainer>
   );
 };
 

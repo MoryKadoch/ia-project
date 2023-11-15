@@ -1,26 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-import { Button, Grid, Slider, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Button, Grid, Slider, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 
-const useStyles = makeStyles({
-    canvas: {
-        border: "1px solid black",
-        borderRadius: "5px",
-        boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.75)",
-        cursor: "crosshair",
-        backgroundColor: "white",
-    },
-    button: {
-        margin: "0 10px 10px 10px",
-    },
+const Canvas = styled('canvas')({
+    border: "1px solid black",
+    borderRadius: "5px",
+    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.75)",
+    cursor: "crosshair",
+    backgroundColor: "white",
+});
+
+const ButtonStyled = styled(Button)({
+    margin: "0 10px 10px 10px",
+});
+
+const useStyles = {
     slider: {
         width: "200px",
         margin: "10px",
     },
-});
+};
 
 function DrawingCanvas() {
-    const classes = useStyles();
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [coordinates, setCoordinates] = useState([]);
@@ -93,8 +94,7 @@ function DrawingCanvas() {
     return (
         <Grid container direction="column" alignItems="center" spacing={2}>
             <Grid item>
-                <canvas
-                    className={classes.canvas}
+                <Canvas
                     ref={canvasRef}
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
@@ -104,24 +104,22 @@ function DrawingCanvas() {
             <Grid item>
                 <Grid container justify="center" spacing={2}>
                     <Grid item>
-                        <Button
-                            className={classes.button}
+                        <ButtonStyled
                             variant="contained"
                             color="secondary"
                             onClick={clearCanvas}
                         >
                             Clear
-                        </Button>
+                        </ButtonStyled>
                     </Grid>
                     <Grid item>
-                        <Button
-                            className={classes.button}
+                        <ButtonStyled
                             variant="contained"
                             color="primary"
                             onClick={saveDrawing}
                         >
                             Save
-                        </Button>
+                        </ButtonStyled>
                     </Grid>
                 </Grid>
             </Grid>
@@ -130,7 +128,7 @@ function DrawingCanvas() {
                     Brush size ({brushSize}px)
                 </Typography>
                 <Slider
-                    className={classes.slider}
+                    sx={useStyles.slider}
                     value={brushSize}
                     min={10}
                     max={100}
