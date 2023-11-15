@@ -20,7 +20,6 @@ def api_list(request):
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        print(process_image(data["drawing"], 0))
         try:
             res = process_image(data["drawing"], data["model"])
 

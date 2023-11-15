@@ -64,7 +64,7 @@ const Captcha = ({ onSuccess }) => {
     console.log(dataURL);
     const data = {
       drawing: dataURL,
-      model: ''
+      model: 'LSTM-1_MNIST'
     };
     setLoading(true);
     fetch('http://127.0.0.1:8000/api/', {
