@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { spacing, styled } from '@mui/system';
 import Captcha from './components/Captcha';
+import { API_BASE_URL } from '../config';
 
 const RootContainer = styled(Container)({
   maxWidth: '100% !important',
@@ -117,7 +118,7 @@ const App = () => {
   };
 
   const getModels = () => {
-    fetch('http://127.0.0.1:8000/models')
+    fetch(`${API_BASE_URL}/models/`)
       .then((response) => response.json())
       .then((data) => {
         setModels(data.models);
@@ -165,7 +166,7 @@ const App = () => {
       model: selectedModel
     };
     setLoading(true);
-    fetch('http://127.0.0.1:8000/api/', {
+    fetch(`${API_BASE_URL}/api/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

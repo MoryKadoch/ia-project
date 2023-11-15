@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-lropaksu%_h#*&tp5w*5wx3jpnaodv*9yyb4hcb&9g%^%!!g0#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ia.kadoch.dev', 'www.ia.kadoch.dev', 'localhost', '127.0.0.1']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
