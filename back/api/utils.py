@@ -37,7 +37,11 @@ def process_image(datas):
 def process_image_predict(datas, model_select):
     img = process_image(datas)
     img = img.reshape(1, 28, 28, 1)
-    res = settings.IA_MODEL[model_select].predict(img)
+    try:
+        res = settings.IA_MODEL[model_select].predict(img)
+    except:
+        model = keras.models.load_model('api/models/'+model_select+'.h5py')
+        res = model.predict(img)
 
     return res
 
