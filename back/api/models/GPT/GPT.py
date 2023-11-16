@@ -4,7 +4,7 @@ import openai
 
 def check_image(statement):
     # Initialiser l'API OpenAI
-    openai.api_key = "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"
+    openai.api_key = "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"
 
     # Envoyer la declaration a OpenAI pour effectuer la verification des faits
     
@@ -12,16 +12,16 @@ def check_image(statement):
     messages.append({"role": "system", "content": "Ton but est de réussir a interpréter un tableau a 2 dimension représentant un chiffre entre 0 et 9. \n\
     La réponse ne sera constituée que de ce chiffre, et uniquement ce chiffre. \n\
     Définitions:\n\
-    - un 0 est représenté par un ovale\n\
-    - un 1 est représenté par une barre\n\
-    - un 2 est représenté par une boucle ouverte et attaché a une barre horizontale droite, en bas\n\
-    - un 3 est représenté par 2 demie boucles ouvertes sur la gauche collées l'une a l'autre\n\
-    - un 4 est représenté par une croix dont le point le plus haut et celui le plus a gauche sont reliés par un segment\n\
-    - un 5 est composé comme un 2 à l'envers\n\
-    - un 6 est représenté par un rond surmonté d'une demie boucle ouverte collée au rond sur la gauche\n\
-    - un 7 est représenté par une barre droite et une autre barre en diagonale partant du point droit de la barre horizontale\n\
-    - un huit est composé de deux ronds collés l'un sur l'autre\n\
-    - le 9 est composé comme un 6 à l'envers\n\
+    - 0 : Un cercle parfait, sans angles ni lignes droites, représentant le vide ou l'absence.\n\
+    - 1 : Une ligne verticale droite, simple et élancée comme une colonne.\n\
+    - 2 : Une forme incurvée avec une courbe douce en haut, rappelant un cygne ou un swanee.\n\
+    - 3 : Un chiffre avec une forme courbée, se terminant par une boucle vers le haut.\n\
+    - 4 : Une ligne verticale avec une ligne horizontale à mi-chemin, formant un angle net.\n\
+    - 5 : Une courbe à mi-chemin entre le cercle et la ligne droite, avec une petite courbe à la base.\n\
+    - 6 : Une boucle arrondie s'étendant vers le bas et se courbant vers le haut.\n\
+    - 7 : Une ligne verticale avec une petite barre horizontale à mi-hauteur, formant un angle.\n\
+    - 8 : Deux cercles superposés ou entrelacés, représentant une double boucle.\n\
+    - 9 : Une boucle se penchant vers la gauche avec une queue s'étendant vers le bas.\n\
     "})
 
     #messages.append({"role": "user", "content": "\

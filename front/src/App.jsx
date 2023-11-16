@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { Button, Container, Grid, Typography, Select, MenuItem, CircularProgress, Backdrop, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Container, Grid, Typography, Select, MenuItem, CircularProgress, Backdrop, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import DrawingCanvas from './components/DrawingCanvas';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -95,8 +95,10 @@ const App = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerGiven, setAnswerGiven] = useState(false);
+  const [showCorrect, setShowCorrect] = useState(false);
   const [prediction, setPrediction] = useState('...');
-  const [confidence, setConfidence] = useState(0);
+    const [confidence, setConfidence] = useState(0);
+  const [correctAnswer, setCorrectAnswer] = useState('');
 
   useEffect(() => {
     getModels();
@@ -135,7 +137,8 @@ const App = () => {
   const handleNo = () => {
     setResponses([...responses, { model: selectedModel, correct: false }]);
     setShowAnswer(false);
-    setAnswerGiven(true);
+    setShowCorrect(true);
+    //setAnswerGiven(true);
   };
 
   const handleModalOpen = () => {
@@ -149,7 +152,20 @@ const App = () => {
   const handleResetStats = () => {
     localStorage.removeItem('responses');
     setResponses([]);
-  };
+    };
+
+    const handleCorrect = () => {
+        setShowCorrect(false);
+        setAnswerGiven(true);
+
+        fetch(`${API_BASE_URL}/api/stat/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ model: selectedModel, prediction: prediction, truth: correctAnswer, valid: false }),
+        })
+    };
 
   const sendDrawing = () => {
     if (!selectedModel) {
@@ -262,7 +278,19 @@ const App = () => {
                    </Button>
                </div>
            </div>
-              )}
+                )}
+                          {showCorrect && (
+                            <div>
+                                <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
+                                    What was the correct answer?
+                              </Typography>
+                              <TextField variant="outlined" value={correctAnswer} onChange={(event) => setCorrectAnswer(event.target.value)} style={{ marginTop: 20, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
+                                <Button variant="contained" color="primary" style={{ marginTop: 20, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} onClick={handleCorrect}>
+                                Submit
+                                </Button>
+                              </div>
+                          )}
+
               {answerGiven && (
                 <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
                   Thank you for your answer!

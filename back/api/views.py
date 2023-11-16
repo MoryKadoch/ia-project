@@ -1,9 +1,9 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from api.models import Train
+from api.models import Train, Stat
 from rest_framework import viewsets
-from api.serializers import apiSerializer, apiSerializerExtension
+from api.serializers import apiSerializer, apiSerializerExtension, apiSerializerStat
 from api.base64decode import process_image
 
 import os
@@ -75,3 +75,35 @@ def post_extend(request):
             serializer.save()
             return JsonResponse(serializer.data)
         return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def post_stats(request, model_name=None, prediction=None, truth=None):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = apiSerializerStat(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    if request.method == 'GET':
+        print(model_name, prediction, truth)
+        if model_name is None and prediction is None and truth is None:
+            elem = Stat.objects.all()
+        elif model_name is not None and prediction is None and truth is None:
+            elem = Stat.objects.filter(model=model_name)
+        elif model_name is None and prediction is not None and truth is None:
+            elem = Stat.objects.filter(prediction=prediction)
+        elif model_name is None and prediction is None and truth is not None:
+            elem = Stat.objects.filter(truth=truth)
+        elif model_name is not None and prediction is not None and truth is None:
+            elem = Stat.objects.filter(model=model_name, prediction=prediction)
+        elif model_name is not None and prediction is None and truth is not None:
+            elem = Stat.objects.filter(model=model_name, truth=truth)
+        elif model_name is None and prediction is not None and truth is not None:
+            elem = Stat.objects.filter(prediction=prediction, truth=truth)
+        elif model_name is not None and prediction is not None and truth is not None:
+            elem = Stat.objects.filter(model=model_name, prediction=prediction, truth=truth)
+        serializer = apiSerializerStat(elem, many=True)
+        return JsonResponse(serializer.data, safe=False)
+

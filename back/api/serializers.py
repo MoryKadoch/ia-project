@@ -6,7 +6,7 @@ class apiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Train
 
-        fields = ['_id', 'label']
+        fields = ['label']
 
         for i in range(0, 784):
             fields.append('pixel' + str(i))
@@ -14,11 +14,11 @@ class apiSerializer(serializers.ModelSerializer):
 class apiSerializerExtension(serializers.ModelSerializer):
     class Meta:
         model = Extension
-        fields = ['_id', 'label']
+        fields = ['label']
         for i in range(0, 784):
             fields.append('pixel' + str(i))
 
 class apiSerializerStat(serializers.ModelSerializer):
     class Meta:
         model = Stat
-        fields = ['_id', 'label', 'prediction', 'valid']
+        fields = ['model', 'prediction', 'truth', 'valid']

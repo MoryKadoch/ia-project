@@ -3,14 +3,14 @@
     "",
     "\\back",
     "\\back\\api",
-    "\\back\\projet_ia",
-    "\\back\\projet_ia\\models",
-    "\\back\\projet_ia\\models\\LSTM-1_MNIST.h5py",
+    "\\back\\api\\models",
+    "\\back\\api\\models\\CNN-1_MNIST.h5py",
+    "\\back\\api\\models\\GPT",
     "\\front",
     "\\front\\src",
     "\\front\\src\\components",
     "\\IA"
   ],
-  "SelectedNode": "\\front\\src\\App.jsx",
+  "SelectedNode": "\\back\\api\\models\\GPT\\GPT.py",
   "PreviewInSolutionExplorer": false
 }
