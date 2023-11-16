@@ -124,3 +124,6 @@ def train_model(name):
     
     saved_model.save('api/models/'+model_type+'-'+str(model_id)+'_'+model_dataset+'.h5py')
 
+    #non testé
+    settings.IA_MODEL.append({"name": model_type+'-'+str(model_id)+'_'+model_dataset, "model": saved_model})
+

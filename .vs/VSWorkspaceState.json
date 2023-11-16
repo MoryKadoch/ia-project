@@ -3,14 +3,15 @@
     "",
     "\\back",
     "\\back\\api",
+    "\\back\\api\\migrations",
     "\\back\\api\\models",
-    "\\back\\api\\models\\CNN-1_MNIST.h5py",
-    "\\back\\api\\models\\GPT",
+    "\\back\\api\\models\\LSTM-1_MNIST.h5py",
+    "\\back\\projet_ia",
     "\\front",
     "\\front\\src",
     "\\front\\src\\components",
     "\\IA"
   ],
-  "SelectedNode": "\\back\\api\\models\\GPT\\GPT.py",
+  "SelectedNode": "\\back\\requirements.txt",
   "PreviewInSolutionExplorer": false
 }

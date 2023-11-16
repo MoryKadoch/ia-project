@@ -154,10 +154,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import keras
 
 def _load_all_model_once():
-    return {
-        "LSTM-1_MNIST": keras.models.load_model('api/models/LSTM-1_MNIST.h5py'), 
-        "CNN-1_MNIST": keras.models.load_model('api/models/CNN-1_MNIST.h5py')
-        }
+
+    models_dir = os.path.join(os.path.dirname(__file__), '../api/models')
+    models_files = os.listdir(models_dir)
+
+    models = {}
+
+    for model in models_files:
+        models[model.split('.')[0]] = keras.models.load_model(os.path.join(models_dir, model))
+
+    return models
 
 IA_MODEL = _load_all_model_once()
 
