@@ -1,10 +1,15 @@
-from django.http import HttpResponse, JsonResponse
+﻿from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from api.models import Train, Stat
+from api.models import Train, Stat, Extension
 from rest_framework import viewsets
 from api.serializers import apiSerializer, apiSerializerExtension, apiSerializerStat
-from api.base64decode import process_image, process_image_predict, process_image_to_json
+from api.utils import process_image, process_image_predict, process_image_to_json
+
+import threading
+import pandas as pd
+
+from django.conf import settings
 
 import os
 
@@ -122,3 +127,29 @@ def post_extend(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
         return HttpResponse(serializer.data, safe=False)
+
+
+@csrf_exempt
+def new_model(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        if settings.ENVIRONMENT == "DEV":
+            try:
+                all_docs_from_train = Train.objects.all()
+                all_docs_from_extend = Extension.objects.all()
+
+                serializerTrain = apiSerializer(all_docs_from_train, many=True)
+                serializerExtend = apiSerializerExtension(all_docs_from_extend, many=True)
+
+                df_train = pd.DataFrame(serializerTrain.data)
+                df_extend = pd.DataFrame(serializerExtend.data)
+
+                datas = pd.concat([df_train, df_extend], ignore_index=True)
+
+                datas = datas.sample(frac=1).reset_index(drop=True)
+                print(datas)
+
+            except :
+                pass
+        else:
+            return JsonResponse({"message": "Fonctionnalité désactivée en production"}, status=203)

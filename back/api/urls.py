@@ -18,4 +18,6 @@ urlpatterns = [
     path('api/stat/model=<str:model_name>/', views.post_stats),
 
     path('api/extend/', views.post_extend),
+
+    path('api/trainmodel', views.new_model),
 ]
