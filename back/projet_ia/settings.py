@@ -18,6 +18,7 @@ import ssl
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
 ENVIRONMENT = os.getenv('ENVIRONMENT', default='DEV')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

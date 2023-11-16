@@ -104,17 +104,6 @@ const App = () => {
     getModels();
   }, []);
 
-  useEffect(() => {
-    const storedResponses = localStorage.getItem('responses');
-    if (storedResponses) {
-      setResponses(JSON.parse(storedResponses));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('responses', JSON.stringify(responses));
-  }, [responses]);
-
   const handleCaptchaSuccess = () => {
     setCaptchaSuccess(true);
   };
@@ -202,11 +191,6 @@ const App = () => {
 
   const handleModalClose = () => {
     setModalOpen(false);
-  };
-
-  const handleResetStats = () => {
-    localStorage.removeItem('responses');
-    setResponses([]);
   };
 
   const sendDrawing = () => {

@@ -154,6 +154,7 @@ def new_model(request):
         data = JSONParser().parse(request)
         print(data["model"])
         name = data["model"]
+        print(settings.ENVIRONMENT)
         if settings.ENVIRONMENT == "DEV":
             try:
                 train = threading.Thread(target=train_model, args=(name,), daemon=True)
@@ -164,4 +165,4 @@ def new_model(request):
             except :
                 pass
         else:
-            return JsonResponse({"message": "Fonctionnalité désactivée en production"}, status=203)
+            return JsonResponse({"message": "This feature is not available in production"}, status=203)
