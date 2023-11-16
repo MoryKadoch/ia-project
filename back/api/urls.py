@@ -16,4 +16,6 @@ urlpatterns = [
     path('api/stat/prediction=<int:prediction>/', views.post_stats),
     path('api/stat/truth=<int:truth>/', views.post_stats),
     path('api/stat/model=<str:model_name>/', views.post_stats),
+
+    path('api/extend/', views.post_extend),
 ]

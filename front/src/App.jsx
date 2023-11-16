@@ -158,6 +158,14 @@ const App = () => {
         setShowCorrect(false);
         setAnswerGiven(true);
 
+        const canvas = document.querySelector('canvas');
+        const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
+
+        const data = {
+            drawing: dataURL,
+            label: correctAnswer,
+        };
+
         fetch(`${API_BASE_URL}/api/stat/`, {
             method: 'POST',
             headers: {
@@ -165,6 +173,15 @@ const App = () => {
             },
             body: JSON.stringify({ model: selectedModel, prediction: prediction, truth: correctAnswer, valid: false }),
         })
+
+        fetch(`${API_BASE_URL}/api/extend/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+
     };
 
   const sendDrawing = () => {

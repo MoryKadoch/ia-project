@@ -6,7 +6,7 @@ import cv2
 import os
 
 
-def process_image(datas, model_select):
+def process_image(datas):
     datas = base64.b64decode((datas))
     output = open("output.png", "wb")
     output.write(datas)
@@ -23,9 +23,24 @@ def process_image(datas, model_select):
     
     img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA )
     
-    img = img.reshape(1, 28, 28, 1)
-    
-    res = settings.IA_MODEL[model_select].predict(img)
     os.remove("output.png")
+
+    return img
+
+def process_image_predict(datas, model_select):
+    img = process_image(datas)
+    img = img.reshape(1, 28, 28, 1)
+    res = settings.IA_MODEL[model_select].predict(img)
+
+    return res
+
+def process_image_to_json(datas, label):
+    res = {"label": label}
+
+    img = process_image(datas)
+    img = img.reshape(784)
+
+    for elem in img:
+        res["pixel"+str(img.tolist().index(elem))] = elem
 
     return res

@@ -4,7 +4,7 @@ from rest_framework.parsers import JSONParser
 from api.models import Train, Stat
 from rest_framework import viewsets
 from api.serializers import apiSerializer, apiSerializerExtension, apiSerializerStat
-from api.base64decode import process_image
+from api.base64decode import process_image, process_image_predict, process_image_to_json
 
 import os
 
@@ -21,7 +21,7 @@ def api_list(request):
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         try:
-            res = process_image(data["drawing"], data["model"])
+            res = process_image_predict(data["drawing"], data["model"])
 
             confidence = res[0][res.argmax(axis=1)[0]]*100
             confidence = "{:.2f}".format(confidence) + "%"
@@ -107,3 +107,18 @@ def post_stats(request, model_name=None, prediction=None, truth=None):
         serializer = apiSerializerStat(elem, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+@csrf_exempt
+def post_extend(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        try:
+            res = process_image_to_json(data["drawing"], data["label"])
+            serializer = apiSerializerExtension(data=res)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+            return JsonResponse(serializer.errors, status=400)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+        return HttpResponse(serializer.data, safe=False)
