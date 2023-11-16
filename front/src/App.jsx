@@ -5,6 +5,8 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { spacing, styled } from '@mui/system';
 import Captcha from './components/Captcha';
+import StatsModal from './components/StatsModal';
+import RetrainModelModal from './components/RetrainModelModal';
 import { API_BASE_URL } from '../config';
 
 const RootContainer = styled(Container)({
@@ -46,6 +48,16 @@ const SelectStyled = styled(Select)({
   color: 'black',
 });
 
+const AnswerStyled = styled(TextField)({
+  width: '33%',
+  marginTop: 20,
+  boxSizing: 'border-box',
+  backgroundColor: 'white',
+  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    border: 'none',
+  },
+});
+
 const PredictionContainer = styled('div')({
   display: 'flex',
   justifyContent: 'center',
@@ -69,19 +81,6 @@ const BackdropStyled = styled(Backdrop)({
   color: '#fff',
 });
 
-const ModalStyled = styled(Modal)({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-});
-
-const PaperStyled = styled('div')({
-  backgroundColor: 'white',
-  border: '2px solid #000',
-  boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
-  padding: spacing(2, 4, 3),
-});
-
 const App = () => {
   const [captchaSuccess, setCaptchaSuccess] = useState(false);
   const [selectedModel, setSelectedModel] = useState('');
@@ -91,14 +90,15 @@ const App = () => {
     'model3',
   ]);
   const [loading, setLoading] = useState(false);
-  const [responses, setResponses] = useState(localStorage.getItem('responses') ? JSON.parse(localStorage.getItem('responses')) : []);
+  const [responses, setResponses] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerGiven, setAnswerGiven] = useState(false);
   const [showCorrect, setShowCorrect] = useState(false);
   const [prediction, setPrediction] = useState('...');
-    const [confidence, setConfidence] = useState(0);
+  const [confidence, setConfidence] = useState(0);
   const [correctAnswer, setCorrectAnswer] = useState('');
+  const [retrainModalOpen, setRetrainModalOpen] = useState(false);
 
   useEffect(() => {
     getModels();
@@ -132,6 +132,31 @@ const App = () => {
     setResponses([...responses, { model: selectedModel, correct: true }]);
     setShowAnswer(false);
     setAnswerGiven(true);
+
+    const canvas = document.querySelector('canvas');
+    const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
+
+    const data = {
+      drawing: dataURL,
+      label: prediction,
+    };
+
+    fetch(`${API_BASE_URL}/api/stat/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ model: selectedModel, prediction: prediction, truth: prediction, valid: true }),
+    })
+
+    fetch(`${API_BASE_URL}/api/extend/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
   };
 
   const handleNo = () => {
@@ -139,6 +164,36 @@ const App = () => {
     setShowAnswer(false);
     setShowCorrect(true);
     //setAnswerGiven(true);
+  };
+
+  const handleCorrect = () => {
+    setShowCorrect(false);
+    setAnswerGiven(true);
+
+    const canvas = document.querySelector('canvas');
+    const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
+
+    const data = {
+      drawing: dataURL,
+      label: correctAnswer,
+    };
+
+    fetch(`${API_BASE_URL}/api/stat/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ model: selectedModel, prediction: prediction, truth: correctAnswer, valid: false }),
+    })
+
+    fetch(`${API_BASE_URL}/api/extend/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
   };
 
   const handleModalOpen = () => {
@@ -152,37 +207,7 @@ const App = () => {
   const handleResetStats = () => {
     localStorage.removeItem('responses');
     setResponses([]);
-    };
-
-    const handleCorrect = () => {
-        setShowCorrect(false);
-        setAnswerGiven(true);
-
-        const canvas = document.querySelector('canvas');
-        const dataURL = canvas.toDataURL().replace('data:image/png;base64,', '');
-
-        const data = {
-            drawing: dataURL,
-            label: correctAnswer,
-        };
-
-        fetch(`${API_BASE_URL}/api/stat/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ model: selectedModel, prediction: prediction, truth: correctAnswer, valid: false }),
-        })
-
-        fetch(`${API_BASE_URL}/api/extend/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-
-    };
+  };
 
   const sendDrawing = () => {
     if (!selectedModel) {
@@ -215,11 +240,12 @@ const App = () => {
       });
   };
 
-  const getModelStats = (model) => {
-    const total = responses.filter((response) => response.model === model).length;
-    const correct = responses.filter((response) => response.model === model && response.correct).length;
-    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-    return `${percentage}% (${correct}/${total})`;
+  const handleRetrainModalOpen = () => {
+    setRetrainModalOpen(true);
+  };
+
+  const handleRetrainModalClose = () => {
+    setRetrainModalOpen(false);
   };
 
   return (
@@ -279,77 +305,55 @@ const App = () => {
                 )}
               </PredictionContainer>
               {showAnswer && !answerGiven && (
-               <div style={{ textAlign: 'center', marginTop: 20 }}>
-               <Typography variant="h6">
-                   Confidence: {confidence}
-               </Typography>
-               <Typography variant="h4" style={{ marginTop: 20 }}>
-                   Is this correct?
-               </Typography>
-               <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-                   <Button variant="contained" color="primary" style={{ marginRight: 20 }} onClick={handleYes}>
-                       Yes
-                   </Button>
-                   <Button variant="contained" color="secondary" onClick={handleNo}>
-                       No
-                   </Button>
-               </div>
-           </div>
-                )}
-                          {showCorrect && (
-                            <div>
-                                <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
-                                    What was the correct answer?
-                              </Typography>
-                              <TextField variant="outlined" value={correctAnswer} onChange={(event) => setCorrectAnswer(event.target.value)} style={{ marginTop: 20, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
-                                <Button variant="contained" color="primary" style={{ marginTop: 20, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} onClick={handleCorrect}>
-                                Submit
-                                </Button>
-                              </div>
-                          )}
-
+                <div style={{ textAlign: 'center', marginTop: 20 }}>
+                  <Typography variant="h6">
+                    Confidence: {confidence}
+                  </Typography>
+                  <Typography variant="h4" style={{ marginTop: 20 }}>
+                    Is this correct?
+                  </Typography>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
+                    <Button variant="contained" color="primary" style={{ marginRight: 20 }} onClick={handleYes}>
+                      Yes
+                    </Button>
+                    <Button variant="contained" color="secondary" onClick={handleNo}>
+                      No
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {showCorrect && (
+                <div>
+                  <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
+                    What was the correct answer?
+                  </Typography>
+                  <AnswerStyled variant="outlined" value={correctAnswer} onChange={(event) => setCorrectAnswer(event.target.value)}></AnswerStyled>
+                  <Button variant="contained" color="primary" style={{ marginTop: 20, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} onClick={handleCorrect}>
+                    Submit
+                  </Button>
+                </div>
+              )}
               {answerGiven && (
                 <Typography variant="h4" style={{ textAlign: 'center', marginTop: 20 }}>
                   Thank you for your answer!
                 </Typography>
               )}
             </Grid>
-            <ButtonStyled variant="contained" color="primary" onClick={handleModalOpen} style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 10, display: 'block' }}>
-              Show statistics
-            </ButtonStyled>
-            <ModalStyled
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <ButtonStyled variant="contained" color="primary" onClick={handleModalOpen} style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 10, display: 'block' }}>
+                Show statistics
+              </ButtonStyled>
+            </Grid>
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <ButtonStyled variant="contained" color="primary" onClick={handleRetrainModalOpen} style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 10, display: 'block', backgroundColor: 'red' }}>
+                Retrain model
+              </ButtonStyled>
+            </Grid>
+            <RetrainModelModal open={retrainModalOpen} handleClose={handleRetrainModalClose} models={models} />
+            <StatsModal
               open={modalOpen}
-              onClose={handleModalClose}
-              aria-labelledby="model-statistics"
-              aria-describedby="model-statistics"
-            >
-              <PaperStyled>
-                <Typography variant="h4" component="div" style={{ margin: 20, textAlign: 'center', color: 'black' }}>
-                  Model statistics
-                </Typography>
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Model</TableCell>
-                        <TableCell>Accuracy</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {models.map((model) => (
-                        <TableRow key={model}>
-                          <TableCell>{model}</TableCell>
-                          <TableCell>{getModelStats(model)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <ButtonStyled variant="contained" color="secondary" onClick={handleResetStats} style={{ margin: 20 }}>
-                  Reset statistics
-                </ButtonStyled>
-              </PaperStyled>
-            </ModalStyled>
+              setOpen={setModalOpen}
+            />
           </Grid>
           <Footer />
         </>
