@@ -5,6 +5,7 @@ venv/
 *.pyc
 *.pyo
 *.pyd
+*.env
 __pycache__/
 
 # Fichiers de sauvegarde

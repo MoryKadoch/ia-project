@@ -4,10 +4,13 @@ from rest_framework.parsers import JSONParser
 from api.models import Train, Stat, Extension
 from rest_framework import viewsets
 from api.serializers import apiSerializer, apiSerializerExtension, apiSerializerStat
-from api.utils import process_image, process_image_predict, process_image_to_json
+from api.utils import process_image, process_image_predict, process_image_to_json, train_model
 
 import threading
-import pandas as pd
+
+
+#to delete
+
 
 from django.conf import settings
 
@@ -129,25 +132,33 @@ def post_extend(request):
         return HttpResponse(serializer.data, safe=False)
 
 
+
+
+def train_datas(request):
+    if request.method == 'GET':
+        elem = Train.objects.all()
+        serializer = apiSerializer(elem, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+def extension_datas(request):
+    if request.method == 'GET':
+        elem = Extension.objects.all()
+        serializer = apiSerializerExtension(elem, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
 @csrf_exempt
 def new_model(request):
     if request.method == 'POST':
+        print("Request received")
         data = JSONParser().parse(request)
+        name = data["model"]
         if settings.ENVIRONMENT == "DEV":
             try:
-                all_docs_from_train = Train.objects.all()
-                all_docs_from_extend = Extension.objects.all()
+                train = threading.Thread(target=train_model, args=(name), daemon=True)
+                train.start()
 
-                serializerTrain = apiSerializer(all_docs_from_train, many=True)
-                serializerExtend = apiSerializerExtension(all_docs_from_extend, many=True)
-
-                df_train = pd.DataFrame(serializerTrain.data)
-                df_extend = pd.DataFrame(serializerExtend.data)
-
-                datas = pd.concat([df_train, df_extend], ignore_index=True)
-
-                datas = datas.sample(frac=1).reset_index(drop=True)
-                print(datas)
+                return JsonResponse({"message": "Done"}, status=200)
 
             except :
                 pass

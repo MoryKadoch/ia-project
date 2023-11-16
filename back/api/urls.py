@@ -19,5 +19,7 @@ urlpatterns = [
 
     path('api/extend/', views.post_extend),
 
-    path('api/trainmodel', views.new_model),
+    path('api/get_train_datas/', views.train_datas),
+    path('api/get_extension_datas/', views.extension_datas),
+    path('api/train/', views.new_model),
 ]
