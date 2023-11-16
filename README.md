@@ -17,8 +17,8 @@
 ```pip install -r requirements.txt```
 
 ### Create dotenv file
-```cp .env.example .env```
+```cp .env_example .env```
 #### Edit .env file
 ```sudo nano .env```
-#### Add your environment variables
-```ENV=dev``` or ```ENV=prod```
+#### Add your environment variable
+```ENV=DEV``` or ```ENV=PROD```
