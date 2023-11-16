@@ -5,6 +5,7 @@ from django.conf import settings
 import cv2
 import os
 
+import pandas as pd
 
 def process_image(datas):
     datas = base64.b64decode((datas))
@@ -44,3 +45,6 @@ def process_image_to_json(datas, label):
         res["pixel"+str(img.tolist().index(elem))] = elem
 
     return res
+
+def fit_with_extension(model_select, datas):
+    pass
