@@ -152,10 +152,11 @@ def new_model(request):
     if request.method == 'POST':
         print("Request received")
         data = JSONParser().parse(request)
+        print(data["model"])
         name = data["model"]
         if settings.ENVIRONMENT == "DEV":
             try:
-                train = threading.Thread(target=train_model, args=(name), daemon=True)
+                train = threading.Thread(target=train_model, args=(name,), daemon=True)
                 train.start()
 
                 return JsonResponse({"message": "Done"}, status=200)

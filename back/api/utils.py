@@ -55,16 +55,17 @@ def process_image_to_json(datas, label):
 def train_model(name):
     train_datas = requests.get("http://127.0.0.1:8000/api/get_train_datas/")
     extension_datas = requests.get("http://127.0.0.1:8000/api/get_extension_datas/")
+
     
     df_train = pd.DataFrame(train_datas.json())
     df_extend = pd.DataFrame(extension_datas.json())
     
-    datas = pd.concat([df_train, df_extend], ignore_index=True)
-    datas = datas.sample(frac=1).reset_index(drop=True)
-    
+    data_train = pd.concat([df_train, df_extend], ignore_index=True)
+    data_train = data_train.sample(frac=1).reset_index(drop=True)
+
     data_test = data_train.sample(frac=0.2, replace=False)
     data_train = data_train.drop(data_test.index)
-    
+
     img_rows, img_cols = 28, 28
     input_shape = (img_rows, img_cols)
     
@@ -113,15 +114,13 @@ def train_model(name):
     history = saved_model.fit(X_train, y_train,
             batch_size=batch_size,
             epochs=epochs,
-            verbose=1,
+            verbose=0,
             validation_data=(X_val, y_val))
-    
-    
     
     model_type = name.split('-')[0]
     
     model_id = model_id_max + 1
     model_dataset = "MNIST_EXTENDED"
     
-    saved_model.save('api/models/'+model_type+'-'+model_id+'_'+model_dataset+'.h5py')
+    saved_model.save('api/models/'+model_type+'-'+str(model_id)+'_'+model_dataset+'.h5py')
 
