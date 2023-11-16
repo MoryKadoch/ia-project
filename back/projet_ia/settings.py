@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'EntrainementModel',
         'CLIENT': {
            'host': 'mongodb+srv://user1:mdp@clusterai.n8qjyoh.mongodb.net/',
-           #'ssl_cert_reqs': ssl.CERT_NONE,
+           'ssl_cert_reqs': ssl.CERT_NONE,
         },
     },
     'extension': {
@@ -104,7 +104,7 @@ DATABASES = {
         'NAME': 'EntrainementModel',
         'CLIENT': {
            'host': 'mongodb+srv://user1:mdp@images.eppax5m.mongodb.net/?retryWrites=true&w=majority',
-           #'ssl_cert_reqs': ssl.CERT_NONE,
+           'ssl_cert_reqs': ssl.CERT_NONE,
         },
     }
 }
