@@ -1,3 +1,8 @@
+# Links to the project
+- App web: https://ia.kadoch.dev
+- Trello: https://trello.com/b/m1uTnfDe/suivi-projet
+- Présentation: https://docs.google.com/presentation/d/1iN9NoQjoi7895_dbfTf79TtSirqsXqjsWVotlRhYcmI/edit?usp=sharing
+
 # Front (React + Vite)
 
 ## Project setup
